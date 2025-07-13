@@ -1,0 +1,30 @@
+name: CI - Type & Lint Check for Develop
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality-check:
+    name: Ruff and mypy checks (including notebooks)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies from requirements.txt
+        run: pip install -r requirements.txt
+
+      - name: Run Ruff on code and notebooks
+        run: nbqa ruff .
+
+      - name: Run mypy on code and notebooks
+        run: nbqa mypy . --exclude tests
